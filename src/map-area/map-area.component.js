@@ -10,19 +10,28 @@ class SimpleMap extends Component {
     zoom: 13,
     draggable: true,
     lat: 59.955413,
-    lng: 30.337844
+    lng: 30.337844,
+    markers: []
   };
 
-  onAddMarker() {
-    console.log('marker added');
+  constructor(props) {
+    super(props);
+    const markers = this.onFilterMarkers(props);
+    this.state.markers = markers;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const markers = this.onFilterMarkers(nextProps);
+    this.setState({ markers });
   }
 
   onMarkerMouseMove(childKey, childProps, mouse) {
-    this.setState({
-      draggable: !this.state.draggable,
-      lat: mouse.lat,
-      lng: mouse.lng
-    });
+    let markers = JSON.parse(JSON.stringify(this.state.markers));
+    
+    markers[childKey].lat = mouse.lat;
+    markers[childKey].lng = mouse.lng;
+
+    this.setState({ markers });
   }
 
   onMarkerMouseUp(childKey, childProps, mouse) {
@@ -30,7 +39,6 @@ class SimpleMap extends Component {
   }
 
   onMarkerMouseDown(childKey, childProps, mouse) {
-    console.log(childKey);
     this.setState({draggable: false});
   }
 
@@ -41,16 +49,23 @@ class SimpleMap extends Component {
     });
   }
 
+  onFilterMarkers(props) {
+    return props.markers.map((marker) => {
+      return {name: marker, lat: this.state.lat, lng: this.state.lng}
+    });
+  }
+
   render() {
-    const listPoints = this.props.markers.map((marker, index) =>
+    const listPoints = this.state.markers.map((marker, index) =>
         <div
            key={index}
            className="place"
-           lat={this.state.lat + +marker}
-           lng={this.state.lng + +marker}>
-             {marker}
+           lat={marker.lat}
+           lng={marker.lng}>
+             {index + 1}
         </div>
     );
+
     return (
       <div className="Google-map">
        <GoogleMapReact

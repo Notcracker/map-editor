@@ -34,6 +34,11 @@
   margin-top: 18px;
 }
 
+.Points-list-item:hover {
+  cursor: pointer;
+  border: 1px solid #5da4fc;
+}
+
 .Point-number {
   min-width: 18px;
   text-align: center;
@@ -49,6 +54,8 @@
   min-width: 18px;
   text-align: center;
   border-left: 1px solid #497dbd;
+  background:  #497dbd;
+  cursor: pointer;
 }
 
 .List-wrapper::-webkit-scrollbar-track {
