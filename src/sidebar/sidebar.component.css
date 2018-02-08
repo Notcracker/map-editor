@@ -1,0 +1,74 @@
+.Sidebar {
+  width: 20%;
+  background-color: #222;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.Point-input {
+  margin-left: 10px;
+  border: 2px solid #497dbd;
+  border-radius: 2px;
+  width: calc(100% - 24px);
+  outline: none;
+}
+
+.List-wrapper {
+  overflow-y: auto;
+  flex-grow: 1;
+  margin-top: 10px;
+}
+
+.Points-list {
+  margin: 0;
+  padding-left: 10px;
+}
+
+.Points-list-item {
+  width: calc(100% - 10px);
+  display: flex;
+  flex-direction: row;
+  border-top: 1px solid #497dbd;
+  border-bottom: 1px solid #497dbd;
+  margin-top: 18px;
+}
+
+.Point-number {
+  min-width: 18px;
+  text-align: center;
+  border-right: 1px solid #497dbd;
+}
+
+.Point-name {
+  margin-left: 10px;
+}
+
+.Delete-button {
+  margin-left: auto;
+  min-width: 18px;
+  text-align: center;
+  border-left: 1px solid #497dbd;
+}
+
+.List-wrapper::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+	border-radius: 3px;
+}
+
+.List-wrapper::-webkit-scrollbar {
+	width: 6px;
+  border-radius: 3px;
+	background-color: #F5F5F5;
+}
+
+.List-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+	background-image: -webkit-gradient(linear,
+									   left bottom,
+									   left top,
+									   color-stop(0.44, rgb(122,153,217)),
+									   color-stop(0.72, rgb(73,125,189)),
+									   color-stop(0.86, rgb(28,58,148)));
+}
