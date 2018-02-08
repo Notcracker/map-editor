@@ -6,21 +6,20 @@ import SimpleMap from './map-area/map-area.component.js';
 
 class App extends Component {
   state = {
-    markers: [1,2,3,4,5]
+    markers: [],
+    action: {}
   };
 
   handleSidebarCreateCallback(pointName) {
     this.setState({
-      markers: [...this.state.markers, pointName],
+      marker: { name: pointName },
+      action: { name: 'add' }
     })
   }
 
   handleSidebarRemoveCallback(pointIndex) {
     this.setState({
-      markers: [
-        ...this.state.markers.slice(0, pointIndex),
-        ...this.state.markers.slice(pointIndex + 1)
-      ],
+      action: { name: 'remove', oldIndex: pointIndex }
     })
   }
 
@@ -32,12 +31,12 @@ class App extends Component {
         </header>
         <div className="Main-content">
           <Sidebar
-            markers={this.state.markers}
             parentOnCreatePoint={::this.handleSidebarCreateCallback}
             parentOnRemovePoint={::this.handleSidebarRemoveCallback}
           ></Sidebar>
           <SimpleMap
-            markers={this.state.markers}
+            action={this.state.action}
+            marker={this.state.marker}
           />
         </div>
       </div>

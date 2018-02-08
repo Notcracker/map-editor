@@ -3,7 +3,14 @@ import './sidebar.component.css';
 
 class Sidebar extends Component {
 
+  state = {
+    markers: []
+  };
+
   createPoint(pointName) {
+    this.setState({
+      markers: [...this.state.markers, pointName],
+    });
     this.props.parentOnCreatePoint(pointName);
   }
 
@@ -15,11 +22,17 @@ class Sidebar extends Component {
   }
 
   onRemovePointPressed(index) {
+    this.setState({
+      markers: [
+        ...this.state.markers.slice(0, index),
+        ...this.state.markers.slice(index + 1)
+      ],
+    });
     this.props.parentOnRemovePoint(index);
   }
 
   render() {
-    const listPoints = this.props.markers.map((marker, index) =>
+    const listPoints = this.state.markers.map((marker, index) =>
         <li key={index} className="Points-list-item">
           <div className="Point-number">{index + 1}</div>
           <div className="Point-name">{marker}</div>
