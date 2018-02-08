@@ -5,7 +5,7 @@ import  GoogleMap  from 'google-map-react';
 import Svg  from '../svg-component/svg.component';
 
 const DEFAULT_REF = 'map';
-const DEFAULT_HEIGHT = '400px';
+const DEFAULT_HEIGHT = '100px';
 
 class SimpleMap extends Component {
 
@@ -18,42 +18,35 @@ class SimpleMap extends Component {
     markers: [],
     bounds: [],
     coordinates: {
-        coords: [
-         [
-             {lat: 25.774, lng: -80.190},
-             {lat: 18.466, lng: -66.118},
-             {lat: 32.321, lng: -64.757},
-             {lat: 25.774, lng: -80.190}
-         ],
-         [
-             {lat: 25.774, lng: -60.190},
-             {lat: 18.466, lng: -46.118},
-             {lat: 32.321, lng: -44.757},
-             {lat: 25.774, lng: -60.190}
-         ],
-     ],
+      coords: [
+        { lat: 59.955413, lng: 30.337844 },
+        { lat: 56.955413, lng: 32.337844 },
+      ],
      options: {
         strokeWidth: 1,
-        stroke: '#FF5106',
+        stroke: '#222',
         strokeOpacity: '0.8',
-        fill: '#FF4234',
-        fillOpacity: '0.3',
-        onMouseEnter: function(e) {
-        },
-        onMouseLeave: function(e) {
-          }
+        fillOpacity: '0',
         },
       },
   };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.action.name === 'add') {
+      let coordinates = JSON.parse(JSON.stringify(this.state.coordinates));
+
+      coordinates.coords.push({
+        lat: this.state.center.lat,
+        lng: this.state.center.lng,
+      });
+
       this.setState({
         markers: [...this.state.markers, {
           name: nextProps.marker.name,
           lat: this.state.center.lat,
           lng: this.state.center.lng,
-        }]
+        }],
+        coordinates,
       });
     }
 
@@ -69,10 +62,16 @@ class SimpleMap extends Component {
 
   onMarkerMouseMove(childKey, childProps, mouse) {
     let markers = JSON.parse(JSON.stringify(this.state.markers));
+    let coordinates = JSON.parse(JSON.stringify(this.state.coordinates));
 
     markers[childKey].lat = mouse.lat;
     markers[childKey].lng = mouse.lng;
-    this.setState({ markers });
+
+    coordinates.coords.push({
+      lat: this.state.center.lat,
+      lng: this.state.center.lng,
+    });
+    this.setState({ markers, coordinates });
   }
 
   onMarkerMouseUp(childKey, childProps, mouse) {
@@ -83,45 +82,24 @@ class SimpleMap extends Component {
     this.setState({draggable: false});
   }
 
-  onGoogleApiLoaded({map, maps}) {
-    this.setState({
-            googleApiLoaded: true
-        });
-
-        const bounds = new maps.LatLngBounds();
-
-        function extendBounds(lat, lng) {
-            const latLng = new maps.LatLng(lat, lng);
-            bounds.extend(latLng);
-        }
-        function extendCoordsBounds(coords) {
-            for (var i = 0; i < coords.length; i++) {
-                if (coords[i].hasOwnProperty('lat') && coords[i].hasOwnProperty('lng')) {
-                    extendBounds(coords[i].lat, coords[i].lng);
-                } else if (Array.isArray(coords[i])) {
-                    extendCoordsBounds(coords[i]);
-                }
-            }
-        }
-
-        extendCoordsBounds(this.state.coordinates.coords);
-
-        map.fitBounds(bounds);
-  }
-
   onBoundsChange(center, zoom, bounds, marginBounds) {
-        this.setState({
-            zoom: zoom,
-            bounds: bounds,
-            center: center
-        });
-    }
-
+    this.setState({
+      bounds: bounds,
+    });
+  }
 
   onChange = ({center, zoom}) => {
     this.setState({
       center,
       zoom,
+    });
+  }
+
+  onGoogleApiLoaded({map, maps}) {
+    this.setState({
+        googleApiLoaded: true,
+        map,
+        maps
     });
   }
 
@@ -153,16 +131,15 @@ class SimpleMap extends Component {
     );
     const destination = {lat: this.state.center.lat + 1, lng: this.state.center.lng + 1};
     const ref = this.props.ref || DEFAULT_REF;
-    const height = this.state.height || DEFAULT_HEIGHT;
+    const height =  DEFAULT_HEIGHT;
 
     return (
-      <div className="Google-map" style={{height: height}} id={this.props.id} ref={ref}>
+      <div className="Google-map" id={this.props.id} ref={ref}>
        <GoogleMap
         draggable={this.state.draggable}
         onChange={this.onChange}
         center={this.state.center}
         zoom={this.state.zoom}
-        defaultZoom={this.props.zoom}
         onChildMouseDown={::this.onMarkerMouseDown}
         onChildMouseUp={::this.onMarkerMouseUp}
         onChildMouseMove={::this.onMarkerMouseMove}
@@ -172,7 +149,7 @@ class SimpleMap extends Component {
         options={this.state.options}
         >
         {listPoints}
-        {this.drawSvg(ref)}
+        {this.state.coordinates.coords.length ? this.drawSvg(ref) : null}
       </GoogleMap>
     </div>
     );

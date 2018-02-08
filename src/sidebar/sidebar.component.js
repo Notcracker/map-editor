@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import DraggableList from  'react-draggable-list';
 import './sidebar.component.css';
 
 class Sidebar extends Component {
 
   state = {
-    markers: []
+    markers: [],
+    useContainer: true,
   };
 
   createPoint(pointName) {
@@ -31,17 +33,18 @@ class Sidebar extends Component {
     this.props.parentOnRemovePoint(index);
   }
 
+  onListChange(newList: Array<Object>) {
+    let markers = newList.map(item => {
+      return item.marker;
+    });
+   this.setState({ markers });
+ }
+
   render() {
-    const listPoints = this.state.markers.map((marker, index) =>
-        <li key={index} className="Points-list-item">
-          <div className="Point-number">{index + 1}</div>
-          <div className="Point-name">{marker}</div>
-          <div
-            className="Delete-button"
-            onClick={() => ::this.onRemovePointPressed(index)}
-            >&times;</div>
-        </li>
-    );
+    const markers = this.state.markers.map((marker, index) => {
+        return {marker, index};
+    });
+
     return (
       <div className="Sidebar">
         <input
@@ -52,12 +55,38 @@ class Sidebar extends Component {
           onKeyDown={::this.onKeyPressed}
           ref={el => this.newPointInput = el}
            />
-         <div className="List-wrapper">
+         <div className="List-wrapper" ref={ref => this._container = ref}>
            <ul className="Points-list">
-             {listPoints}
-           </ul>
+             <DraggableList
+               itemKey="marker"
+               template={PointItem}
+               list={markers}
+               container={()=>this.state.useContainer ? this._container : document.body}
+               onMoveEnd={newList => this.onListChange(newList)}
+               commonProps={{deleteCallback: ::this.onRemovePointPressed}}
+            />
+          </ul>
        </div>
       </div>
+    );
+  }
+}
+
+class PointItem extends Component {
+  render() {
+    const dragHandle = this.props.dragHandle;
+    return (
+      <li>
+        {dragHandle(
+          <div className="Points-list-item">
+          <div className="Point-number">{this.props.item.index + 1}</div>
+          <div className="Point-name">{this.props.item.marker}</div>
+          <div
+            className="Delete-button"
+            onClick={() => this.props.commonProps.deleteCallback(this.props.item.index)}
+            >&times;</div>
+        </div>)}
+      </li>
     );
   }
 }
