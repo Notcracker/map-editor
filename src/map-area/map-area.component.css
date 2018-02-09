@@ -1,18 +1,3 @@
 .Google-map {
   width: 80%;
 }
-.place{
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  left: -10px;
-  top: -10px;
-  border: 1px solid #222;
-  background: #7a99d9;
-  color: white;
-  cursor: pointer;
-}

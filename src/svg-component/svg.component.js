@@ -17,23 +17,23 @@ export default class Svg extends Component {
 
     render() {
         const coords = this.props.coordinates.coords;
-        if (coords.length == 0)
+        if (coords.length === 0)
             return null;
 
         const ptCorner = toPoints(this.props.bounds[0], this.props.bounds[1], this.props.zoom);
         const props = this.props;
 
-        function drawChildCoords(coords, i) {
+        function drawChildCoords(coords, index) {
             if (coords[0].hasOwnProperty('lat') && coords[0].hasOwnProperty('lng'))
                 return <Polyline
-                    key={i}
+                    key={index}
                     coords={coords}
                     ptCorner={ptCorner}
                     zoom={props.zoom}
                     options={props.coordinates.options} />;
 
             var child = [];
-            for (var i = 0; i < coords.length; i++) {
+            for (let i = 0; i < coords.length; i++) {
                 if (Array.isArray(coords[i])) {
                     if (Array.isArray(coords[i][0])) {
                         child.push(<Group

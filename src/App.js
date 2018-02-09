@@ -23,6 +23,12 @@ class App extends Component {
     })
   }
 
+  handleSidebarChangeCallback(oldIndex, newIndex) {
+    this.setState({
+      action: { name: 'change', oldIndex, newIndex }
+    })
+  }
+
   render() {
     return (
       <div className="App">
@@ -32,6 +38,7 @@ class App extends Component {
         <div className="Main-content">
           <Sidebar
             parentOnCreatePoint={::this.handleSidebarCreateCallback}
+            parentOnChangePoint={::this.handleSidebarChangeCallback}
             parentOnRemovePoint={::this.handleSidebarRemoveCallback}
           ></Sidebar>
           <SimpleMap

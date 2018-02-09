@@ -1,0 +1,64 @@
+.Marker {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  left: -10px;
+  top: -10px;
+  border: 1px solid #222;
+  background: #7a99d9;
+  color: white;
+  cursor: pointer;
+  z-index: 13;
+}
+
+.Popup {
+  display: inline-block;
+  position: relative;
+  width: 200px;
+  height: 40px;
+  border-radius: 4px;
+  left: -100px;
+  top: -40px;
+  border: 1px solid #222;
+  background: #7a99d9;
+  color: white;
+  cursor: pointer;
+  z-index: 13;
+}
+
+.Popup-header {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #222;
+}
+
+.Popup-address, .Popup-name {
+  margin-left: 8px;
+}
+
+.Popup-number {
+  border-right: 1px solid #222;
+  min-width: 18px;
+  text-align: center;
+}
+
+.Close-button {
+  border-left: 1px solid #222;
+  margin-left: auto;
+  min-width: 18px;
+  text-align: center;
+}
+
+.Arrow-down {
+  position: absolute;
+  width: 0;
+  height: 0;
+  margin-left: 94px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #222;
+}

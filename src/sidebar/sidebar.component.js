@@ -33,12 +33,14 @@ class Sidebar extends Component {
     this.props.parentOnRemovePoint(index);
   }
 
-  onListChange(newList: Array<Object>) {
+  onListChange(newList, movedItem, oldIndex, newIndex) {
     let markers = newList.map(item => {
       return item.marker;
     });
    this.setState({ markers });
- }
+
+    this.props.parentOnChangePoint(oldIndex, newIndex);
+  }
 
   render() {
     const markers = this.state.markers.map((marker, index) => {
@@ -62,7 +64,7 @@ class Sidebar extends Component {
                template={PointItem}
                list={markers}
                container={()=>this.state.useContainer ? this._container : document.body}
-               onMoveEnd={newList => this.onListChange(newList)}
+               onMoveEnd={::this.onListChange}
                commonProps={{deleteCallback: ::this.onRemovePointPressed}}
             />
           </ul>
