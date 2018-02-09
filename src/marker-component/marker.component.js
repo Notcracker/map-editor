@@ -43,7 +43,6 @@ class Marker extends Component {
   }
 
   onClose() {
-    console.log('close')
     this.setState({
       show: false
     });

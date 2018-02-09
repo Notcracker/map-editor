@@ -18,6 +18,15 @@ class Sidebar extends Component {
 
   onKeyPressed(eve) {
     if (eve.key === "Enter" && eve.target.value.length) {
+
+      let found = this.state.markers.find((marker) => {
+        if (marker === eve.target.value) return marker;
+      });
+
+      if (found) {
+        alert('Sorry, this name is already in use. Choose another one.');
+        return;
+      }
       this.createPoint(eve.target.value);
       this.newPointInput.value = '';
     }
