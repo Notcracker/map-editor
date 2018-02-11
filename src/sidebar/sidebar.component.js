@@ -46,7 +46,7 @@ class Sidebar extends Component {
     let markers = newList.map(item => {
       return item.marker;
     });
-   this.setState({ markers });
+    this.setState({ markers });
 
     this.props.parentOnChangePoint(oldIndex, newIndex);
   }
@@ -63,21 +63,27 @@ class Sidebar extends Component {
           name="pointInput"
           className="Point-input"
           placeholder="Enter point name:"
-          onKeyDown={::this.onKeyPressed}
+          onKeyDown={this.onKeyPressed.bind(this)}
           ref={el => this.newPointInput = el}
            />
-         <div className="List-wrapper" ref={ref => this._container = ref}>
-           <ul className="Points-list">
-             <DraggableList
-               itemKey="marker"
-               template={PointItem}
-               list={markers}
-               container={()=>this.state.useContainer ? this._container : document.body}
-               onMoveEnd={::this.onListChange}
-               commonProps={{deleteCallback: ::this.onRemovePointPressed}}
-            />
-          </ul>
-       </div>
+         {
+           markers.length
+           ?
+           <div className="List-wrapper" ref={ref => this._container = ref}>
+             <ul className="Points-list">
+               <DraggableList
+                 itemKey="marker"
+                 template={PointItem}
+                 list={markers}
+                 container={()=>this.state.useContainer ? this._container : document.body}
+                 onMoveEnd={this.onListChange.bind(this)}
+                 commonProps={{deleteCallback: this.onRemovePointPressed.bind(this)}}
+                 />
+              </ul>
+            </div>
+            :
+            null
+         }
       </div>
     );
   }

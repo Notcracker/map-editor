@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import './map-area.component.css';
 
 import GoogleMap from 'google-map-react';
-import Svg from '../svg-component/svg.component';
-import Marker from '../marker-component/marker.component';
+import Svg from '../svg/svg.component';
+import Marker from '../marker/marker.component';
 
 const DEFAULT_REF = 'map';
 
-class SimpleMap extends Component {
+class MapArea extends Component {
 
   state = {
     center: {lat: 59.955413, lng: 30.337844},
@@ -31,70 +31,79 @@ class SimpleMap extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.action.name === 'add') {
-      let coordinates = JSON.parse(JSON.stringify(this.state.coordinates));
-
-      coordinates.coords.push({
-        lat: this.state.center.lat,
-        lng: this.state.center.lng,
-      });
-
-      this.setState({
-        markers: [...this.state.markers, {
-          name: nextProps.marker.name,
-          lat: this.state.center.lat,
-          lng: this.state.center.lng,
-        }],
-        coordinates,
-      });
+      this.onAddAction(nextProps);
     }
 
     if (nextProps.action.name === 'remove') {
-      const markers = [
-        ...this.state.markers.slice(0, nextProps.action.oldIndex),
-        ...this.state.markers.slice(nextProps.action.oldIndex + 1)
-      ];
-
-      let coordinates = JSON.parse(JSON.stringify(this.state.coordinates));
-
-      coordinates.coords = markers.map( marker => {
-        return {lat: marker.lat, lng: marker.lng};
-      });
-
-      this.setState({
-          markers: [
-            ...this.state.markers.slice(0, nextProps.action.oldIndex),
-            ...this.state.markers.slice(nextProps.action.oldIndex + 1)
-          ],
-          coordinates
-      })
+      this.onRemoveAction(nextProps);
     }
 
     if (nextProps.action.name === 'change') {
-      let markers = JSON.parse(JSON.stringify(this.state.markers));
-      let changed = markers.splice(nextProps.action.oldIndex, 1);
-
-      markers.splice(nextProps.action.newIndex, 0, ...changed);
-
-      let coordinates = JSON.parse(JSON.stringify(this.state.coordinates));
-
-      coordinates.coords = markers.map( marker => {
-        return {lat: marker.lat, lng: marker.lng};
-      });
-
-      this.setState({
-          markers,
-          coordinates,
-      })
+      this.onChangeAction(nextProps);
     }
   }
 
+  onAddAction(nextProps) {
+    let coordinates = this.clone(this.state.coordinates);
+
+    coordinates.coords.push({
+      lat: this.state.center.lat,
+      lng: this.state.center.lng,
+    });
+
+    this.setState({
+      markers: [...this.state.markers, {
+        name: nextProps.marker.name,
+        lat: this.state.center.lat,
+        lng: this.state.center.lng,
+      }],
+      coordinates,
+    });
+  }
+
+  onRemoveAction(nextProps) {
+    const markers = [
+      ...this.state.markers.slice(0, nextProps.action.oldIndex),
+      ...this.state.markers.slice(nextProps.action.oldIndex + 1)
+    ];
+
+    let coordinates = this.clone(this.state.coordinates);
+
+    coordinates.coords = markers.map( marker => {
+      return {lat: marker.lat, lng: marker.lng};
+    });
+
+    this.setState({
+        markers,
+        coordinates
+    })
+  }
+
+  onChangeAction(nextProps) {
+    let markers = this.clone(this.state.markers);
+    let changed = markers.splice(nextProps.action.oldIndex, 1);
+
+    markers.splice(nextProps.action.newIndex, 0, ...changed);
+
+    let coordinates = this.clone(this.state.coordinates);
+
+    coordinates.coords = markers.map( marker => {
+      return {lat: marker.lat, lng: marker.lng};
+    });
+
+    this.setState({
+        markers,
+        coordinates,
+    });
+  }
+
   onMarkerMouseMove(childKey, childProps, mouse) {
-    const markers = JSON.parse(JSON.stringify(this.state.markers));
+    const markers = this.clone(this.state.markers);
 
     markers[childKey].lat = mouse.lat;
     markers[childKey].lng = mouse.lng;
 
-    let coordinates = JSON.parse(JSON.stringify(this.state.coordinates));
+    let coordinates = this.clone(this.state.coordinates);
 
     coordinates.coords = markers.map( marker => {
       return {lat: marker.lat, lng: marker.lng};
@@ -105,15 +114,15 @@ class SimpleMap extends Component {
     this.setState({ markers, coordinates, moved });
   }
 
-  onMarkerMouseUp(childKey, childProps, mouse) {
+  onMarkerMouseUp() {
     this.setState({draggable: true});
   }
 
-  onMarkerMouseDown(childKey, childProps, mouse) {
+  onMarkerMouseDown() {
     this.setState({draggable: false, moved: false});
   }
 
-  onBoundsChange(center, zoom, bounds, marginBounds) {
+  onBoundsChange(center, zoom, bounds) {
     this.setState({
       bounds: bounds,
     });
@@ -150,6 +159,10 @@ class SimpleMap extends Component {
       );
   }
 
+  clone(object) {
+    return JSON.parse(JSON.stringify(object));
+  }
+
   render() {
     const markersPoints = this.state.markers.map((marker, index) =>
       <Marker
@@ -171,11 +184,11 @@ class SimpleMap extends Component {
         onChange={this.onChange}
         center={this.state.center}
         zoom={this.state.zoom}
-        onChildMouseDown={::this.onMarkerMouseDown}
-        onChildMouseUp={::this.onMarkerMouseUp}
-        onChildMouseMove={::this.onMarkerMouseMove}
-        onGoogleApiLoaded={::this.onGoogleApiLoaded}
-        onBoundsChange={::this.onBoundsChange}
+        onChildMouseDown={this.onMarkerMouseDown.bind(this)}
+        onChildMouseUp={this.onMarkerMouseUp.bind(this)}
+        onChildMouseMove={this.onMarkerMouseMove.bind(this)}
+        onGoogleApiLoaded={this.onGoogleApiLoaded.bind(this)}
+        onBoundsChange={this.onBoundsChange.bind(this)}
         yesIWantToUseGoogleMapApiInternals
         options={this.state.options}
         bootstrapURLKeys={{
@@ -192,4 +205,4 @@ class SimpleMap extends Component {
   }
 }
 
-export default SimpleMap;
+export default MapArea;

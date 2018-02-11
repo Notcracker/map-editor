@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Sidebar from './sidebar/sidebar.component.js';
-import SimpleMap from './map-area/map-area.component.js';
+import MapArea from './map-area/map-area.component.js';
 
 class App extends Component {
   state = {
@@ -37,11 +37,11 @@ class App extends Component {
         </header>
         <div className="Main-content">
           <Sidebar
-            parentOnCreatePoint={::this.handleSidebarCreateCallback}
-            parentOnChangePoint={::this.handleSidebarChangeCallback}
-            parentOnRemovePoint={::this.handleSidebarRemoveCallback}
+            parentOnCreatePoint={this.handleSidebarCreateCallback.bind(this)}
+            parentOnChangePoint={this.handleSidebarChangeCallback.bind(this)}
+            parentOnRemovePoint={this.handleSidebarRemoveCallback.bind(this)}
           ></Sidebar>
-          <SimpleMap
+          <MapArea
             action={this.state.action}
             marker={this.state.marker}
           />

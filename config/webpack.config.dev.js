@@ -150,7 +150,7 @@ module.exports = {
               // directory for faster rebuilds.
               cacheDirectory: true,
               plugins: ['transform-runtime'],
-              presets: ['stage-0'],
+              presets: ['env', 'react', 'stage-0','stage-2'],
             },
           },
           // "postcss" loader applies autoprefixer to our CSS.

@@ -52,7 +52,7 @@ class Marker extends Component {
     const { marker, index } = this.props;
     return (
         <div
-          onClick={!this.state.show ? ::this.onClick : null}
+          onClick={!this.state.show ? this.onClick.bind(this) : null}
           className={this.state.show ? "Popup" : "Marker"}
           >
           {
@@ -64,7 +64,7 @@ class Marker extends Component {
                 <div className="Popup-name">{marker.name}</div>
                 <div
                   className="Close-button"
-                  onClick={::this.onClose}
+                  onClick={this.onClose.bind(this)}
                   >&times;</div>
               </div>
               <div className="Popup-address">{this.state.address}</div>
