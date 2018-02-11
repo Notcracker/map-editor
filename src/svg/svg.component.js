@@ -6,42 +6,48 @@ import Polyline from '../polyline/polyline.component';
 import toPoints from './../functions/toPoints';
 
 export default class Svg extends Component {
-    static propTypes = {
-        coordinates: PropTypes.object,
-        bounds: PropTypes.array,
-        zoom: PropTypes.number
-    };
+  static propTypes = {
+    coordinates: PropTypes.object.isRequired,
+    bounds: PropTypes.array.isRequired,
+    zoom: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    width: PropTypes.number.isRequired,
+  };
 
-    shouldComponentUpdate = shouldPureComponentUpdate;
+  shouldComponentUpdate = shouldPureComponentUpdate;
 
-    render() {
-        const coords = this.props.coordinates.coords;
-        if (coords.length === 0)
-            return null;
-
-        const ptCorner = toPoints(this.props.bounds[0], this.props.bounds[1], this.props.zoom);
-        const props = this.props;
-
-        function drawChildCoords(coords, index) {
-            if (coords[0].hasOwnProperty('lat') && coords[0].hasOwnProperty('lng')) {
-              return <Polyline
-                  key={index}
-                  coords={coords}
-                  ptCorner={ptCorner}
-                  zoom={props.zoom}
-                  options={props.coordinates.options} />;
-            }
-
-            let child = [];
-            return child;
-        }
-
-        return (
-            <svg
-                height={this.props.height}
-                width={this.props.width}>
-                {drawChildCoords(coords)}
-            </svg>
-        );
+  render() {
+    const { coords } = this.props.coordinates;
+    if (coords.length === 0) {
+      return null;
     }
+
+    const ptCorner = toPoints(this.props.bounds[0], this.props.bounds[1], this.props.zoom);
+    const { props } = this;
+
+    function drawChildCoords(coordinates, index) {
+      const { hasOwnProperty } = Object.prototype;
+      if (hasOwnProperty.call(coordinates[0], 'lat') && hasOwnProperty.call(coordinates[0], 'lng')) {
+        return (
+          <Polyline
+            key={index}
+            coords={coordinates}
+            ptCorner={ptCorner}
+            zoom={props.zoom}
+            options={props.coordinates.options}
+          />
+        );
+      }
+      return [];
+    }
+
+    return (
+      <svg
+        height={this.props.height}
+        width={this.props.width}
+      >
+        {drawChildCoords(coords)}
+      </svg>
+    );
+  }
 }

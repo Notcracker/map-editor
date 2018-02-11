@@ -1,0 +1,12 @@
+{
+  parser: "babel-eslint",
+  extends: "airbnb",
+  plugins: [
+    "react"
+  ],
+  rules: {
+    linebreak-style: 0,
+    no-alert: 0,
+    react/jsx-filename-extension: [1, { "extensions": [".js", ".jsx"] }],
+  }
+}

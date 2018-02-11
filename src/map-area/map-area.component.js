@@ -8,14 +8,20 @@ import Marker from '../marker/marker.component';
 const DEFAULT_REF = 'map';
 
 class MapArea extends Component {
+  constructor() {
+    super();
+    this.onMarkerMouseDown = this.onMarkerMouseDown.bind(this);
+    this.onMarkerMouseUp = this.onMarkerMouseUp.bind(this);
+    this.onMarkerMouseMove = this.onMarkerMouseMove.bind(this);
+    this.onGoogleApiLoaded = this.onGoogleApiLoaded.bind(this);
+    this.onBoundsChange = this.onBoundsChange.bind(this);
+  }
 
   state = {
-    center: {lat: 59.955413, lng: 30.337844},
+    center: { lat: 59.955413, lng: 30.337844 },
     zoom: 13,
     draggable: true,
     moved: false,
-    lat: 59.955413,
-    lng: 30.337844,
     markers: [],
     bounds: [],
     coordinates: {
@@ -74,8 +80,8 @@ class MapArea extends Component {
     });
 
     this.setState({
-        markers,
-        coordinates
+      markers,
+      coordinates
     })
   }
 
@@ -115,11 +121,11 @@ class MapArea extends Component {
   }
 
   onMarkerMouseUp() {
-    this.setState({draggable: true});
+    this.setState({ draggable: true });
   }
 
   onMarkerMouseDown() {
-    this.setState({draggable: false, moved: false});
+    this.setState({ draggable: false, moved: false });
   }
 
   onBoundsChange(center, zoom, bounds) {
@@ -128,18 +134,18 @@ class MapArea extends Component {
     });
   }
 
-  onChange = ({center, zoom}) => {
+  onChange = ({ center, zoom }) => {
     this.setState({
       center,
       zoom,
     });
   }
 
-  onGoogleApiLoaded({map, maps}) {
+  onGoogleApiLoaded({ map, maps }) {
     this.setState({
-        googleApiLoaded: true,
-        map,
-        maps
+      googleApiLoaded: true,
+      map,
+      maps
     });
   }
 
@@ -166,41 +172,41 @@ class MapArea extends Component {
   render() {
     const markersPoints = this.state.markers.map((marker, index) =>
       <Marker
-         key={index}
-         index={index}
-         marker={marker}
-         lat={marker.lat}
-         lng={marker.lng}
-         moved={this.state.moved}
-         maps={this.state.maps}
+        key={index}
+        index={index}
+        marker={marker}
+        lat={marker.lat}
+        lng={marker.lng}
+        moved={this.state.moved}
+        maps={this.state.maps}
       />
     );
     const ref = this.props.ref || DEFAULT_REF;
 
     return (
       <div className="Google-map" id={this.props.id} ref={ref}>
-       <GoogleMap
-        draggable={this.state.draggable}
-        onChange={this.onChange}
-        center={this.state.center}
-        zoom={this.state.zoom}
-        onChildMouseDown={this.onMarkerMouseDown.bind(this)}
-        onChildMouseUp={this.onMarkerMouseUp.bind(this)}
-        onChildMouseMove={this.onMarkerMouseMove.bind(this)}
-        onGoogleApiLoaded={this.onGoogleApiLoaded.bind(this)}
-        onBoundsChange={this.onBoundsChange.bind(this)}
-        yesIWantToUseGoogleMapApiInternals
-        options={this.state.options}
-        bootstrapURLKeys={{
-          key: 'AIzaSyD2gOGU8LU5VZZbuPP361HCU7TUquOZy-U',
-          language: 'ru',
-          region: 'ru',
-        }}
+        <GoogleMap
+          draggable={this.state.draggable}
+          onChange={this.onChange}
+          center={this.state.center}
+          zoom={this.state.zoom}
+          onChildMouseDown={this.onMarkerMouseDown}
+          onChildMouseUp={this.onMarkerMouseUp}
+          onChildMouseMove={this.onMarkerMouseMove}
+          onGoogleApiLoaded={this.onGoogleApiLoaded}
+          onBoundsChange={this.onBoundsChange}
+          yesIWantToUseGoogleMapApiInternals
+          options={this.state.options}
+          bootstrapURLKeys={{
+            key: 'AIzaSyD2gOGU8LU5VZZbuPP361HCU7TUquOZy-U',
+            language: 'ru',
+            region: 'ru',
+          }}
         >
-        {markersPoints}
-        {this.state.coordinates.coords.length ? this.drawSvg(ref) : null}
-      </GoogleMap>
-    </div>
+          {markersPoints}
+          {this.state.coordinates.coords.length ? this.drawSvg(ref) : null}
+        </GoogleMap>
+      </div>
     );
   }
 }
